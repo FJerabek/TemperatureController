@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.fjerabek.temperature_controller.MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="3"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/setNotifyValue"
+        android:orderInCategory="1"
+        android:title="Nastavit oznamení při teplotě"/>
+    <item
+        android:id="@+id/nameSetting"
+        android:orderInCategory="2"
+        android:title="Nastavení pojmenování"
+        >
+
+    </item>
+
+</menu>

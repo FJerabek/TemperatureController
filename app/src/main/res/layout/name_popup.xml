@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/popuplayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teplota 1: " />
+        <EditText
+            android:id="@+id/temp1Name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/popuplayout2"
+        android:layout_below="@+id/popuplayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teplota 2: "/>
+        <EditText
+            android:id="@+id/temp2Name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/popuplayout3"
+        android:layout_below="@+id/popuplayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teplota 3: "/>
+        <EditText
+            android:id="@+id/temp3Name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_below="@+id/popuplayout3"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"/>
+
+    <LinearLayout
+        android:id="@+id/popuplayout4"
+        android:layout_below="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zásuvka 1: "/>
+        <EditText
+            android:id="@+id/pwr1Name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/popuplayout5"
+        android:layout_below="@+id/popuplayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zásuvka 2: "/>
+        <EditText
+            android:id="@+id/pwr2Name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/popuplayout6"
+        android:layout_below="@+id/popuplayout5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zásuvka 3: "/>
+        <EditText
+            android:id="@+id/pwr3Name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</RelativeLayout>

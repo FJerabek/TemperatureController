@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Teplotní regulátor</string>
+    <string name="action_settings">Nastavení</string>
+    <string name="ip_address">IP: </string>
+    <string name="port">Port:</string>
+    <string name="save">Uložit</string>
+
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="p1">1</string>
+    <string name="overview">overview</string>
+    <string name="notSet">N/A</string>
+    <string name="set">Nastavit</string>
+    <string name="full">100</string>
+    <string name="p2">2</string>
+    <string name="p3">3</string>
+    <string name="revert">Zrušit</string>
+    <string name="defaults">Základní</string>
+    <string name="name"> Název:</string>
+
+    <string name="temperature">Teplota</string>
+    <string name="power">Zásuvky</string>
+    <string name="mode">Mód</string>
+    <string name="status">Status</string>
+    <string name="textStatus">Textové zobrazení</string>
+    <string name="name_popup"> Nastavení pojmenování</string>
+    <string name="rename">Přejmenovat</string>
+    <string name="temp1_name">Teplota 1</string>
+    <string name="temp2_name">Teplota 2</string>
+    <string name="temp3_name">Teplota 3</string>
+    <string name="pwr1_name">Zásuvka 1</string>
+    <string name="pwr2_name">Zásuvka 2</string>
+    <string name="pwr3_name">Zásuvka 3</string>
+    <string name="new_name">Nové jméno:</string>
+</resources>

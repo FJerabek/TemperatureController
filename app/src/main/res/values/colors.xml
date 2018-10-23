@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hint_foreground_material_light">#00000000</color>
+    <color name="hint_foreground_material_dark">#00000000</color>
+    <color name="colorPrimary">#2979ff</color>
+    <color name="colorPrimaryDark">#304ffe</color>
+    <color name="colorAccent">#ff1744</color>
+    <color name="FABcolorDisconnected">#ff3d00</color>
+    <color name="FABcolorReconnecting">#FF6D00</color>
+    <color name="FABcolorConnected">#2E7D32</color>
+    <color name="FABcolorError">#B71C1C</color>
+    <color name="white">#FFFFFF</color>
+    <color name="noDataText">#000000</color>
+    <color name="popupStroke">#6b6b6b</color>
+    <color name="colorPwrDefault">#558b2f</color>
+    <color name="colorPwrOther">#d50000</color>
+    <color name="powerBarColor">#FF6D00</color>
+    <color name="powerBarTextColor">#f57f17</color>
+    <color name="temperatureBarColor">#FF2962FF</color>
+    <color name="notifyTempBarColorOff">#d50000</color>
+</resources>

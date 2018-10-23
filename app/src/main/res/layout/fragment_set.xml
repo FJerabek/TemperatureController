@@ -1,0 +1,207 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UI.fragments.SetFragment">
+
+    <LinearLayout
+        android:id="@+id/P1Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/pwr1Set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/p1"
+            android:textSize="20sp"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/power"
+            android:layout_gravity="center_vertical"/>
+        <EditText
+            android:id="@+id/P1"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:digits="123456789"/>
+        <ImageView
+            android:id="@+id/p1OK"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/P1SeekBarLayout"
+        android:layout_below="@+id/P1Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/P1minus"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/minus"/>
+        <SeekBar
+            android:layout_weight="1"
+            android:id="@+id/P1SeekerBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:layout_gravity="center_vertical" />
+        <Button
+            android:id="@+id/P1plus"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/plus"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/P2Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/P1SeekBarLayout">
+        <TextView
+            android:id="@+id/pwr2Set"
+            android:textColor="@color/colorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/p2"
+            android:textSize="20sp"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/power"
+            android:layout_gravity="center_vertical"/>
+        <EditText
+            android:id="@+id/P2"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:digits="123456789"/>
+        <ImageView
+            android:id="@+id/p2OK"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/P2SeekBarLayout"
+        android:layout_below="@+id/P2Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/P2minus"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/minus"/>
+        <SeekBar
+            android:id="@+id/P2SeekerBar"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:layout_gravity="center_vertical" />
+
+        <Button
+            android:id="@+id/P2plus"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/plus"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/P3Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/P2SeekBarLayout">
+
+        <TextView
+            android:id="@+id/pwr3Set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/p3"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/power"
+            android:layout_gravity="center_vertical"/>
+
+        <EditText
+            android:id="@+id/P3"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:digits="123456789"/>
+        <ImageView
+            android:id="@+id/p3OK"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/P3SeekBarLayout"
+        android:layout_below="@+id/P3Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/P3minus"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/minus"/>
+        <SeekBar
+            android:layout_weight="1"
+            android:id="@+id/P3SeekerBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:layout_gravity="center_vertical" />
+        <Button
+            android:id="@+id/P3plus"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/plus"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/SetButtonLayout"
+        android:layout_below="@+id/P3SeekBarLayout"
+        android:layout_marginTop="50dp">
+
+        <Button
+            android:id="@+id/SetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/set"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:enabled="false"
+            android:id="@+id/revertChanges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/revert"/>
+    </LinearLayout>
+</RelativeLayout>

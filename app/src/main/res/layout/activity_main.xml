@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.an/droid.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.fjerabek.temperature_controller.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/appbar_padding_top"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content" />
+            <GridLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content">
+
+                <TextView
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sent: "
+                    android:textSize="10sp"/>
+                <TextView
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:id="@+id/sentCount"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="10sp"/>
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_row="0"
+                    android:layout_column="2"
+                    android:id="@+id/sentIcon"
+                    android:layout_height="10dp"
+                    android:layout_width="10dp"/>
+
+                <TextView
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Received: "
+                    android:textSize="10sp"/>
+                <TextView
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:id="@+id/recvCount"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="10sp"/>
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_row="1"
+                    android:layout_column="2"
+                    android:id="@+id/recvIcon"
+                    android:layout_height="10dp"
+                    android:layout_width="10dp"/>
+            </GridLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/FABcolorDisconnected"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        android:src="@drawable/ic_compare_arrows_white_48dp" />
+
+
+</android.support.design.widget.CoordinatorLayout>
