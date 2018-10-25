@@ -8,7 +8,7 @@ import java.io.IOException;
  * Created by fjerabek on 17.10.16.
  * Class for creating network socket
  */
-public class MakeConnection extends AsyncTask<Void, Void, Networking> {
+public class ConnectionCreator extends AsyncTask<Void, Void, Networking> {
     private String hostname;
     private int port;
     private Networking net;
@@ -18,7 +18,7 @@ public class MakeConnection extends AsyncTask<Void, Void, Networking> {
         void processFinish(Networking output);
     }
 
-    public MakeConnection(AsyncResponse delegate, String hostname, int port){
+    public ConnectionCreator(AsyncResponse delegate, String hostname, int port){
         this.hostname = hostname;
         this.port = port;
         this.delegate = delegate;

@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.tools;
+package cz.fjerabek.temperatureController.Notification;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

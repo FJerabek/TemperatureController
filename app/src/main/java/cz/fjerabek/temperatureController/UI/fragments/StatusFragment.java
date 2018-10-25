@@ -26,8 +26,8 @@ import java.util.ArrayList;
 
 import cz.fjerabek.temperatureController.MainActivity;
 import cz.fjerabek.temperatureController.R;
-import cz.fjerabek.temperatureController.tools.ProgressBarAnimation;
-import cz.fjerabek.temperatureController.tools.TemperatureChecker;
+import cz.fjerabek.temperatureController.UI.Animations.ProgressBarAnimation;
+import cz.fjerabek.temperatureController.Notification.TemperatureChecker;
 
 /**
  * Created by fjerabek on 14.9.16.

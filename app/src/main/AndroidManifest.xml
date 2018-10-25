@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <service android:name=".NetworkService"
+        <service android:name=".network.NetworkService"
             android:enabled="true"
             android:exported="true" />
 
@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Settings"
+            android:name=".UI.Settings"
             android:screenOrientation="portrait" />
 
     </application>

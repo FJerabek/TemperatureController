@@ -47,11 +47,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import cz.fjerabek.temperatureController.UI.FabMode;
+import cz.fjerabek.temperatureController.UI.Settings;
 import cz.fjerabek.temperatureController.UI.fragments.SetFragment;
 import cz.fjerabek.temperatureController.UI.fragments.StatusFragment;
+import cz.fjerabek.temperatureController.network.NetworkService;
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
-import cz.fjerabek.temperatureController.tools.TemperatureChecker;
+import cz.fjerabek.temperatureController.Notification.TemperatureChecker;
+import cz.fjerabek.temperatureController.Notification.notificationType.AudioNotification;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -88,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
 
         final Intent serviceIntent = new Intent(this, NetworkService.class);
+
+        TemperatureChecker.addListener(new AudioNotification());
 
         connection = new ServiceConnection() {
             @Override
@@ -237,11 +242,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        sentIcon = findViewById(R.id.sentIcon);
-        recvIcon = findViewById(R.id.recvIcon);
-        sentText = findViewById(R.id.sentCount);
-        recvText = findViewById(R.id.recvCount);
-
+        sentIcon =              findViewById(R.id.sentIcon);
+        recvIcon =              findViewById(R.id.recvIcon);
+        sentText =              findViewById(R.id.sentCount);
+        recvText =              findViewById(R.id.recvCount);
+        fab =                   findViewById(R.id.fab);
+        Toolbar toolbar =       findViewById(R.id.toolbar);
+        ViewPager mViewPager =  findViewById(R.id.container);
 
         sentIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_upward));
         recvIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_downward));
@@ -255,8 +262,6 @@ public class MainActivity extends AppCompatActivity {
 
         fabRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate);
         fabRotate.setRepeatCount(Animation.INFINITE);
-
-        fab = findViewById(R.id.fab);
 
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -300,15 +305,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         params.setScrollFlags(0);
 
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(0);
         mViewPager.setOffscreenPageLimit(2);
@@ -349,11 +352,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        cz.fjerabek.temperatureController.tools.NotificationManager.stop(this);
+        cz.fjerabek.temperatureController.Notification.NotificationManager.stop(this);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         int datasetID = intent.getIntExtra("datasetID", 0);
-        if (mNotificationManager != null) {
-        }
 
         TemperatureChecker.setState(datasetID, false);
         statusFragment.updateNotifyValues();

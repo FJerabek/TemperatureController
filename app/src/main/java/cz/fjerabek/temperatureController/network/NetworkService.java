@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController;
+package cz.fjerabek.temperatureController.network;
 
 import android.app.Notification;
 import android.app.Service;
@@ -16,13 +16,11 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cz.fjerabek.temperatureController.network.MakeConnection;
-import cz.fjerabek.temperatureController.network.Networking;
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
-import cz.fjerabek.temperatureController.tools.TemperatureChecker;
+import cz.fjerabek.temperatureController.Notification.TemperatureChecker;
 
-public class NetworkService extends Service implements MakeConnection.AsyncResponse {
+public class NetworkService extends Service implements ConnectionCreator.AsyncResponse {
 
     private boolean running = false;
 
@@ -186,7 +184,7 @@ public class NetworkService extends Service implements MakeConnection.AsyncRespo
         if(net != null && net.checkConnection() && updateTask != null)
             handler.postDelayed(updateTask, 1000);
         else
-            new MakeConnection(this, hostname, port).execute();
+            new ConnectionCreator(this, hostname, port).execute();
     }
 
     public void stopService() {
