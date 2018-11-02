@@ -42,7 +42,7 @@
                     android:layout_row="0"
                     android:layout_column="1"
                     android:id="@+id/sentCount"
-                    android:layout_width="20dp"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textSize="10sp"/>
@@ -64,7 +64,7 @@
                     android:layout_row="1"
                     android:layout_column="1"
                     android:id="@+id/recvCount"
-                    android:layout_width="20dp"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textSize="10sp"/>

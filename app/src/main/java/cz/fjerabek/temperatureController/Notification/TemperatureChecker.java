@@ -5,7 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.fjerabek.temperatureController.TemperatureRestriction;
+import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
 
 /**

@@ -18,7 +18,6 @@ import java.util.TimerTask;
 
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
-import cz.fjerabek.temperatureController.Notification.TemperatureChecker;
 
 public class NetworkService extends Service implements ConnectionCreator.AsyncResponse {
 
@@ -102,7 +101,6 @@ public class NetworkService extends Service implements ConnectionCreator.AsyncRe
 
                         switch (packet.getPacketType()) {
                             case UPDATE:
-                                TemperatureChecker.checkTemps(packet.getTemp(), NetworkService.this);
                                 packetReceiver.receiveUpdate(packet);
                                 break;
 

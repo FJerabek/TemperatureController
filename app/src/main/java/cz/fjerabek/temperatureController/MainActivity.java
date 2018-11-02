@@ -3,7 +3,6 @@ package cz.fjerabek.temperatureController;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,15 +52,13 @@ import cz.fjerabek.temperatureController.UI.fragments.StatusFragment;
 import cz.fjerabek.temperatureController.network.NetworkService;
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
-import cz.fjerabek.temperatureController.Notification.TemperatureChecker;
-import cz.fjerabek.temperatureController.Notification.notificationType.AudioNotification;
+import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int SETTINGS_ACTIVITY_KEY = 1;
     public static final int TEMP_COUNT = 3;
     public static final int PWR_COUNT = 3;
-    public static final int NOTIFICATION_PREFIX = 854;
     private String ip;
     private int port;
     private Animation fabRotate;
@@ -91,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
 
         final Intent serviceIntent = new Intent(this, NetworkService.class);
-
-        TemperatureChecker.addListener(new AudioNotification());
 
         connection = new ServiceConnection() {
             @Override
@@ -282,7 +277,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-                NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                NetworkInfo wifi = null;
+                if (connManager != null) {
+                    wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                }
                 if (!wifiManager.isWifiEnabled() && !wifiHotspot) {
                     Snackbar.make(view, "Wifi není zapnuto!", Snackbar.LENGTH_LONG).setAction("ZAPNOUT", new View.OnClickListener() {
                         @Override
@@ -352,13 +350,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        cz.fjerabek.temperatureController.Notification.NotificationManager.stop(this);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int temperatureID = intent.getIntExtra("temperatureID", 0);
+        int restrictionID = intent.getIntExtra("retrictionID", 0);
 
-        int datasetID = intent.getIntExtra("datasetID", 0);
+        Temperature temp = statusFragment.getTemperatureById(temperatureID);
+        if(temp != null) {
+            TemperatureRestriction rest = temp.getRestrictionById(restrictionID);
+            if(rest != null) {
+                rest.dismissListeners(getApplicationContext());
+            }
+        }
 
-        TemperatureChecker.setState(datasetID, false);
-        statusFragment.updateNotifyValues();
     }
 
     public void namePopup() {
@@ -498,10 +500,10 @@ public class MainActivity extends AppCompatActivity {
 
         alert.setPositiveButton("Nastavit", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which) { //TODO: FIX adding restriction
                 float[][] notifyValues = new float[PacketParser.TEMP_COUNT][2];
                 for (int i = 0; i < notifyEditTexts.length; i++) {
-                    TemperatureChecker.setState(i, notifyCB[i].isChecked());
+//                    TemperatureChecker.setState(i, notifyCB[i].isChecked());
                     editor.putBoolean("state" + i, notifyCB[i].isChecked());
                     for (int x = 0; x < notifyEditTexts[i].length; x++) {
                         float newValue;
@@ -513,7 +515,7 @@ public class MainActivity extends AppCompatActivity {
                         notifyValues[i][x] = newValue;
                     }
                 }
-                TemperatureChecker.setTemps(notifyValues);
+//                TemperatureChecker.setTemps(notifyValues);
                 editor.apply();
 
                 statusFragment.updateNotifyValues();
