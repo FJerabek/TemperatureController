@@ -15,7 +15,7 @@ public class StatusNotification extends TemperatureNotifiable {
     @Override
     public void outOfRange(Context context, TemperatureRestriction restriction) {
         startNotification("Teplotní varování",
-                "Teplota: " + restriction.getTemperature().getName() +  "\n Hodnota: " + restriction.getTemperature().getValue(),
+                "Teplota: " + restriction.getTemperature().getName() +  " Hodnota: " + restriction.getTemperature().getValue(),
                 context,
                 restriction.getTemperature().getId(),
                 restriction.getId());
@@ -31,16 +31,25 @@ public class StatusNotification extends TemperatureNotifiable {
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(description);
         mBuilder.setLights(Color.RED, 3000,1000);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.thermometer_large));
-        mBuilder.setSmallIcon(R.drawable.thermometer);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
+        mBuilder.setSmallIcon(R.drawable.ic_thermometer);
         mBuilder.setAutoCancel(false);
         mBuilder.setOngoing(false);
+
+        System.out.println("creating intent tempID: " + tempId + " restrictionID: " + restrictionId);
 
         Intent i = new Intent(context, MainActivity.class);
         i.putExtra("temperatureID", tempId);
         i.putExtra("restrictionID", restrictionId);
 
-        mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, i, 0);
+
+
+        mBuilder.setContentIntent(contentIntent);
         android.app.NotificationManager mNotificationManager = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (mNotificationManager != null) {
             mNotificationManager.notify(getId(), mBuilder.build());

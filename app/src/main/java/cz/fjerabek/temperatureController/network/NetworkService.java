@@ -1,21 +1,25 @@
 package cz.fjerabek.temperatureController.network;
 
-import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cz.fjerabek.temperatureController.MainActivity;
+import cz.fjerabek.temperatureController.R;
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
 
@@ -70,8 +74,18 @@ public class NetworkService extends Service implements ConnectionCreator.AsyncRe
 
     @Override
     public void onCreate() {
-        Notification notification = new Notification();
-        startForeground(123456787,notification);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(),"cz.fjerabek.temperatureController");
+        mBuilder.setContentTitle(getResources().getString(R.string.app_name));
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.launcher));
+        mBuilder.setSmallIcon(R.drawable.ic_thermometer);
+        mBuilder.setAutoCancel(false);
+        mBuilder.setOngoing(false);
+
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+
+        mBuilder.setContentIntent(PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        startForeground(-1,mBuilder.build());
     }
 
     @Override

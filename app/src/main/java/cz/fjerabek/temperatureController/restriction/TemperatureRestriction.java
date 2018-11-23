@@ -15,6 +15,7 @@ public abstract class TemperatureRestriction implements TemperatureCheckable, Co
     private int id;
     private Temperature temperature;
     private boolean enabled;
+    private boolean notified = false;
     private List<TemperatureNotifiable> listeners = new ArrayList<>();
 
     public TemperatureRestriction(Temperature temperature) {
@@ -50,8 +51,11 @@ public abstract class TemperatureRestriction implements TemperatureCheckable, Co
     }
 
     public void notifyListeners(Context context) {
-        for(TemperatureNotifiable listener : listeners) {
-            listener.outOfRange(context, this);
+        if(!notified) {
+            for (TemperatureNotifiable listener : listeners) {
+                listener.outOfRange(context, this);
+            }
+            notified = true;
         }
     }
 

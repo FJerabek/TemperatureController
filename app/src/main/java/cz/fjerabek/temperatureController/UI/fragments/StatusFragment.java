@@ -2,6 +2,7 @@ package cz.fjerabek.temperatureController.UI.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import cz.fjerabek.temperatureController.MainActivity;
 import cz.fjerabek.temperatureController.Notification.notificationType.StatusNotification;
+import cz.fjerabek.temperatureController.Notification.notificationType.TestNotification;
 import cz.fjerabek.temperatureController.R;
 import cz.fjerabek.temperatureController.Temperature;
 import cz.fjerabek.temperatureController.UI.Animations.ProgressBarAnimation;
@@ -55,6 +57,18 @@ public class StatusFragment extends Fragment {
 
         temperatures = new ArrayList<>();
 
+        pwr = new ArcProgress[]{rootView.findViewById(R.id.heatUnit1),
+                rootView.findViewById(R.id.heatUnit2),
+                rootView.findViewById(R.id.heatUnit3)};
+
+
+
+        tempName = new TextView[]{
+                rootView.findViewById(R.id.temp1Text),
+                rootView.findViewById(R.id.temp2Text),
+                rootView.findViewById(R.id.temp3Text)
+        };
+
         temperatures.add(new Temperature(
                 getContext(),
                 null,
@@ -80,21 +94,115 @@ public class StatusFragment extends Fragment {
                 0));
 
 
-        TemperatureRestriction restriction = new ValueRangeRestriction(temperatures.get(0), 0,50); //TODO: ADD restriction managing page
+        TemperatureRestriction restriction = new ValueRangeRestriction(temperatures.get(1), 0,50); //TODO: ADD restriction managing page
         restriction.addListener(new StatusNotification());
-
-        pwr = new ArcProgress[]{rootView.findViewById(R.id.heatUnit1),
-                rootView.findViewById(R.id.heatUnit2),
-                rootView.findViewById(R.id.heatUnit3)};
+//        restriction.addListener(new VibrationNotification(new long[]{500L, 500L}));
+        restriction.addListener(new TestNotification());
 
 
+        setRenameListeners();
 
-        tempName = new TextView[]{
-                rootView.findViewById(R.id.temp1Text),
-                rootView.findViewById(R.id.temp2Text),
-                rootView.findViewById(R.id.temp3Text)
-        };
+        updateNames();
+        status = rootView.findViewById(R.id.status);
+        mode = rootView.findViewById(R.id.mode);
 
+        tempText[0] = rootView.findViewById(R.id.temp1Value);
+        tempText[1] = rootView.findViewById(R.id.temp2Value);
+        tempText[2] = rootView.findViewById(R.id.temp3Value);
+
+        updateNotifyValues();
+
+        return rootView;
+    }
+
+
+    public void updateNotifyValues() {
+        for(Temperature temp : temperatures) {
+        }
+    //TODO: Fix value notification progress bars
+//        for (int i = 0; i < notifyProgress.length; i++) {
+//            for (int x = 0; x < notifyProgress[i].length; x++) {
+//                ProgressBarAnimation animation = new ProgressBarAnimation(notifyProgress[i][x], notifyProgress[i][x].getProgress(), (int) TemperatureChecker.getTemps()[i][x]);
+//                animation.setDuration(500);
+//                notifyProgress[i][x].startAnimation(animation);
+//                notifyProgress[i][x].setProgress((int) TemperatureChecker.getTemps()[i][x]);
+//
+//                if(!TemperatureChecker.getState()[i]) {
+//                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), notifyProgress[i][x].getFinishedStrokeColor(), ContextCompat.getColor(getContext(), R.color.notifyTempBarColorOff));
+//                    colorAnimation.setDuration(500);
+//                    final int finalI = i;
+//                    final int finalX = x;
+//                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                        @Override
+//                        public void onAnimationUpdate(ValueAnimator animation) {
+//                            notifyProgress[finalI][finalX].setFinishedStrokeColor((int) animation.getAnimatedValue());
+//                            notifyProgress[finalI][finalX].setTextColor((int) animation.getAnimatedValue());
+//                        }
+//                    });
+//                    colorAnimation.start();
+//
+//                } else {
+//                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), notifyProgress[i][x].getFinishedStrokeColor(), ContextCompat.getColor(getContext(), R.color.temperatureBarColor));
+//                    colorAnimation.setDuration(500);
+//                    final int finalI1 = i;
+//                    final int finalX1 = x;
+//                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                        @Override
+//                        public void onAnimationUpdate(ValueAnimator animation) {
+//                            notifyProgress[finalI1][finalX1].setFinishedStrokeColor((int) animation.getAnimatedValue());
+//                            notifyProgress[finalI1][finalX1].setTextColor((int) animation.getAnimatedValue());
+//                        }
+//                    });
+//                    colorAnimation.start();
+//
+//                }
+//            }
+//        }
+    }
+
+    public List<Temperature> getTemperatures() {
+        return temperatures;
+    }
+
+    public Temperature getTemperatureById(int tempId) {
+        for(Temperature temp : temperatures) {
+            if(temp.getId() == tempId) {
+                return temp;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Intent intent = getActivity().getIntent();
+
+        if(intent.hasExtra("temperatureID") && intent.hasExtra("restrictionID")) {
+            int temperatureID = intent.getIntExtra("temperatureID", -1);
+            int restrictionID = intent.getIntExtra("restrictionID", -1);
+            Temperature temp = getTemperatureById(temperatureID);
+            if (temp != null) {
+                TemperatureRestriction rest = temp.getRestrictionById(restrictionID);
+                if (rest != null) {
+                    rest.dismissListeners(getContext());
+                }
+            }
+        }
+    }
+
+    /**
+     * Set values to the temperature text view
+     * @param id id of the temp value
+     * @param newTemp temperature
+     */
+    public void setTemp(int id, float newTemp) {
+        temperatures.get(id).setValue(newTemp);
+        tempText[id].setText(String.valueOf(newTemp));
+    }
+
+    private void setRenameListeners() {
         for (int i = 0; i < temperatures.size(); i++) {
             final int finalI = i;
             final int finalI1 = i;
@@ -188,87 +296,6 @@ public class StatusFragment extends Fragment {
                 }
             });
         }
-
-        updateNames();
-        status = rootView.findViewById(R.id.status);
-        mode = rootView.findViewById(R.id.mode);
-
-        tempText[0] = rootView.findViewById(R.id.temp1Value);
-        tempText[1] = rootView.findViewById(R.id.temp2Value);
-        tempText[2] = rootView.findViewById(R.id.temp3Value);
-
-        updateNotifyValues();
-
-        return rootView;
-    }
-
-    //::::::::::::::::::::::::::::::::::TextView setters:::::::::::::::::::::::::::::::::::
-
-    public void updateNotifyValues() {
-        for(Temperature temp : temperatures) {
-        }
-    //TODO: Fix value notification progress bars
-//        for (int i = 0; i < notifyProgress.length; i++) {
-//            for (int x = 0; x < notifyProgress[i].length; x++) {
-//                ProgressBarAnimation animation = new ProgressBarAnimation(notifyProgress[i][x], notifyProgress[i][x].getProgress(), (int) TemperatureChecker.getTemps()[i][x]);
-//                animation.setDuration(500);
-//                notifyProgress[i][x].startAnimation(animation);
-//                notifyProgress[i][x].setProgress((int) TemperatureChecker.getTemps()[i][x]);
-//
-//                if(!TemperatureChecker.getState()[i]) {
-//                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), notifyProgress[i][x].getFinishedStrokeColor(), ContextCompat.getColor(getContext(), R.color.notifyTempBarColorOff));
-//                    colorAnimation.setDuration(500);
-//                    final int finalI = i;
-//                    final int finalX = x;
-//                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                        @Override
-//                        public void onAnimationUpdate(ValueAnimator animation) {
-//                            notifyProgress[finalI][finalX].setFinishedStrokeColor((int) animation.getAnimatedValue());
-//                            notifyProgress[finalI][finalX].setTextColor((int) animation.getAnimatedValue());
-//                        }
-//                    });
-//                    colorAnimation.start();
-//
-//                } else {
-//                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), notifyProgress[i][x].getFinishedStrokeColor(), ContextCompat.getColor(getContext(), R.color.temperatureBarColor));
-//                    colorAnimation.setDuration(500);
-//                    final int finalI1 = i;
-//                    final int finalX1 = x;
-//                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                        @Override
-//                        public void onAnimationUpdate(ValueAnimator animation) {
-//                            notifyProgress[finalI1][finalX1].setFinishedStrokeColor((int) animation.getAnimatedValue());
-//                            notifyProgress[finalI1][finalX1].setTextColor((int) animation.getAnimatedValue());
-//                        }
-//                    });
-//                    colorAnimation.start();
-//
-//                }
-//            }
-//        }
-    }
-
-    public List<Temperature> getTemperatures() {
-        return temperatures;
-    }
-
-    public Temperature getTemperatureById(int tempId) {
-        for(Temperature temp : temperatures) {
-            if(temp.getId() == tempId) {
-                return temp;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Set values to the temperature text view
-     * @param id id of the temp value
-     * @param newTemp temperature
-     */
-    public void setTemp(int id, float newTemp) {
-        temperatures.get(id).setValue(newTemp);
-        tempText[id].setText(String.valueOf(newTemp));
     }
 
     /**

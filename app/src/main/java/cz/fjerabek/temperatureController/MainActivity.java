@@ -350,17 +350,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        int temperatureID = intent.getIntExtra("temperatureID", 0);
-        int restrictionID = intent.getIntExtra("retrictionID", 0);
-
-        Temperature temp = statusFragment.getTemperatureById(temperatureID);
+        int restrictionid = getIntent().getIntExtra("restrictionID", 0);
+        int temperatureid = getIntent().getIntExtra("temperatureID", 0);
+        System.out.println("new Intent: " + "\nRestrictionID: " + restrictionid + "\nTempID: " + temperatureid);
+        Temperature temp = statusFragment.getTemperatureById(temperatureid);
         if(temp != null) {
-            TemperatureRestriction rest = temp.getRestrictionById(restrictionID);
-            if(rest != null) {
-                rest.dismissListeners(getApplicationContext());
+            TemperatureRestriction res = temp.getRestrictionById(restrictionid);
+            if(res != null) {
+                res.dismissListeners(getApplicationContext());
             }
         }
-
     }
 
     public void namePopup() {
@@ -496,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
         alert.setTitle("Oznámení o teplotě");
         alert.setView(layout);
         alert.setCancelable(true);
-        alert.setIcon(R.drawable.thermometer_large);
+        alert.setIcon(R.mipmap.launcher);
 
         alert.setPositiveButton("Nastavit", new DialogInterface.OnClickListener() {
             @Override

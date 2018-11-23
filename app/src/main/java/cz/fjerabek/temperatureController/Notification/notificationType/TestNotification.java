@@ -17,6 +17,6 @@ public class TestNotification extends TemperatureNotifiable {
 
     @Override
     public void dismiss(Context context, TemperatureRestriction restriction) {
-
+        System.out.println("TEST NOTIFICATION - Temperature: " + restriction.getTemperature().getName() + " dismissed");
     }
 }
