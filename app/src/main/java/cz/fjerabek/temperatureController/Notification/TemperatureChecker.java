@@ -1,12 +1,12 @@
-package cz.fjerabek.temperatureController.tools;
+package cz.fjerabek.temperatureController.Notification;
 
 import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
-import cz.fjerabek.temperatureController.tools.notificationType.TemperatureNotifiable;
 
 /**
  * Created by fjerabek on 31.01.2017.
@@ -14,7 +14,7 @@ import cz.fjerabek.temperatureController.tools.notificationType.TemperatureNotif
  */
 
 public class TemperatureChecker {
-    private static List<TemperatureNotifiable> listeners = new ArrayList<>();
+    private static List<TemperatureRestriction> restrictions = new ArrayList<>();
     private static float[][] temps = new float[PacketParser.TEMP_COUNT][2];
     private static boolean[] state = new boolean[PacketParser.TEMP_COUNT];
 
@@ -58,14 +58,14 @@ public class TemperatureChecker {
     public static void checkTemps(float[] curTemp, Context context){
         for (int i = 0; i < curTemp.length; i++) {
             if((curTemp[i] < temps[i][0] || curTemp[i] > temps[i][1]) && state[i]){
-                for(TemperatureNotifiable listener : listeners) {
-                    listener.outOfRange(context, i, curTemp[i], temps[i][0], temps[i][1]);
+                for(TemperatureRestriction restriction : restrictions) {
+                    restriction.check(context, restriction.getTemperature());
                 }
             }
         }
     }
 
-    public static void addListener(TemperatureNotifiable listener) {
-        listeners.add(listener);
+    public static void addRestriction(TemperatureRestriction restriction) {
+        restrictions.add(restriction);
     }
 }

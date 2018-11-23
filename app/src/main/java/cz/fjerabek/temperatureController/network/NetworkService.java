@@ -1,28 +1,29 @@
-package cz.fjerabek.temperatureController;
+package cz.fjerabek.temperatureController.network;
 
-import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cz.fjerabek.temperatureController.network.MakeConnection;
-import cz.fjerabek.temperatureController.network.Networking;
+import cz.fjerabek.temperatureController.MainActivity;
+import cz.fjerabek.temperatureController.R;
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
-import cz.fjerabek.temperatureController.tools.TemperatureChecker;
 
-public class NetworkService extends Service implements MakeConnection.AsyncResponse {
+public class NetworkService extends Service implements ConnectionCreator.AsyncResponse {
 
     private boolean running = false;
 
@@ -73,8 +74,18 @@ public class NetworkService extends Service implements MakeConnection.AsyncRespo
 
     @Override
     public void onCreate() {
-        Notification notification = new Notification();
-        startForeground(123456787,notification);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(),"cz.fjerabek.temperatureController");
+        mBuilder.setContentTitle(getResources().getString(R.string.app_name));
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.launcher));
+        mBuilder.setSmallIcon(R.drawable.ic_thermometer);
+        mBuilder.setAutoCancel(false);
+        mBuilder.setOngoing(false);
+
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+
+        mBuilder.setContentIntent(PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        startForeground(-1,mBuilder.build());
     }
 
     @Override
@@ -104,7 +115,6 @@ public class NetworkService extends Service implements MakeConnection.AsyncRespo
 
                         switch (packet.getPacketType()) {
                             case UPDATE:
-                                TemperatureChecker.checkTemps(packet.getTemp(), NetworkService.this);
                                 packetReceiver.receiveUpdate(packet);
                                 break;
 
@@ -186,7 +196,7 @@ public class NetworkService extends Service implements MakeConnection.AsyncRespo
         if(net != null && net.checkConnection() && updateTask != null)
             handler.postDelayed(updateTask, 1000);
         else
-            new MakeConnection(this, hostname, port).execute();
+            new ConnectionCreator(this, hostname, port).execute();
     }
 
     public void stopService() {

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import cz.fjerabek.temperatureController.MainActivity;
-import cz.fjerabek.temperatureController.NetworkService;
+import cz.fjerabek.temperatureController.network.NetworkService;
 import cz.fjerabek.temperatureController.R;
 
 /**

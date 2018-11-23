@@ -3,7 +3,6 @@ package cz.fjerabek.temperatureController;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,18 +46,19 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import cz.fjerabek.temperatureController.UI.FabMode;
+import cz.fjerabek.temperatureController.UI.Settings;
 import cz.fjerabek.temperatureController.UI.fragments.SetFragment;
 import cz.fjerabek.temperatureController.UI.fragments.StatusFragment;
+import cz.fjerabek.temperatureController.network.NetworkService;
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
-import cz.fjerabek.temperatureController.tools.TemperatureChecker;
+import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int SETTINGS_ACTIVITY_KEY = 1;
     public static final int TEMP_COUNT = 3;
     public static final int PWR_COUNT = 3;
-    public static final int NOTIFICATION_PREFIX = 854;
     private String ip;
     private int port;
     private Animation fabRotate;
@@ -237,11 +237,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        sentIcon = findViewById(R.id.sentIcon);
-        recvIcon = findViewById(R.id.recvIcon);
-        sentText = findViewById(R.id.sentCount);
-        recvText = findViewById(R.id.recvCount);
-
+        sentIcon =              findViewById(R.id.sentIcon);
+        recvIcon =              findViewById(R.id.recvIcon);
+        sentText =              findViewById(R.id.sentCount);
+        recvText =              findViewById(R.id.recvCount);
+        fab =                   findViewById(R.id.fab);
+        Toolbar toolbar =       findViewById(R.id.toolbar);
+        ViewPager mViewPager =  findViewById(R.id.container);
 
         sentIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_upward));
         recvIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_downward));
@@ -255,8 +257,6 @@ public class MainActivity extends AppCompatActivity {
 
         fabRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate);
         fabRotate.setRepeatCount(Animation.INFINITE);
-
-        fab = findViewById(R.id.fab);
 
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -277,7 +277,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-                NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                NetworkInfo wifi = null;
+                if (connManager != null) {
+                    wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                }
                 if (!wifiManager.isWifiEnabled() && !wifiHotspot) {
                     Snackbar.make(view, "Wifi není zapnuto!", Snackbar.LENGTH_LONG).setAction("ZAPNOUT", new View.OnClickListener() {
                         @Override
@@ -300,15 +303,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         params.setScrollFlags(0);
 
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(0);
         mViewPager.setOffscreenPageLimit(2);
@@ -349,14 +350,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        cz.fjerabek.temperatureController.tools.NotificationManager.stop(this);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        int datasetID = intent.getIntExtra("datasetID", 0);
-        if (mNotificationManager != null) {
+        int restrictionid = getIntent().getIntExtra("restrictionID", 0);
+        int temperatureid = getIntent().getIntExtra("temperatureID", 0);
+        System.out.println("new Intent: " + "\nRestrictionID: " + restrictionid + "\nTempID: " + temperatureid);
+        Temperature temp = statusFragment.getTemperatureById(temperatureid);
+        if(temp != null) {
+            TemperatureRestriction res = temp.getRestrictionById(restrictionid);
+            if(res != null) {
+                res.dismissListeners(getApplicationContext());
+            }
         }
-
-        TemperatureChecker.setState(datasetID, false);
-        statusFragment.updateNotifyValues();
     }
 
     public void namePopup() {
@@ -492,14 +495,14 @@ public class MainActivity extends AppCompatActivity {
         alert.setTitle("Oznámení o teplotě");
         alert.setView(layout);
         alert.setCancelable(true);
-        alert.setIcon(R.drawable.thermometer_large);
+        alert.setIcon(R.mipmap.launcher);
 
         alert.setPositiveButton("Nastavit", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which) { //TODO: FIX adding restriction
                 float[][] notifyValues = new float[PacketParser.TEMP_COUNT][2];
                 for (int i = 0; i < notifyEditTexts.length; i++) {
-                    TemperatureChecker.setState(i, notifyCB[i].isChecked());
+//                    TemperatureChecker.setState(i, notifyCB[i].isChecked());
                     editor.putBoolean("state" + i, notifyCB[i].isChecked());
                     for (int x = 0; x < notifyEditTexts[i].length; x++) {
                         float newValue;
@@ -511,7 +514,7 @@ public class MainActivity extends AppCompatActivity {
                         notifyValues[i][x] = newValue;
                     }
                 }
-                TemperatureChecker.setTemps(notifyValues);
+//                TemperatureChecker.setTemps(notifyValues);
                 editor.apply();
 
                 statusFragment.updateNotifyValues();
