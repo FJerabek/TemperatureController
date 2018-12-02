@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.UI.Animations;
+package cz.fjerabek.temperatureController.ui.Animations;
 
 import android.view.animation.Animation;
 import android.view.animation.Transformation;

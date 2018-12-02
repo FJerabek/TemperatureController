@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.UI.fragments;
+package cz.fjerabek.temperatureController.ui.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.fjerabek.temperatureController.MainActivity;
-import cz.fjerabek.temperatureController.Notification.notificationType.StatusNotification;
-import cz.fjerabek.temperatureController.Notification.notificationType.TestNotification;
+import cz.fjerabek.temperatureController.notification.notificationType.StatusNotification;
+import cz.fjerabek.temperatureController.notification.notificationType.TestNotification;
 import cz.fjerabek.temperatureController.R;
-import cz.fjerabek.temperatureController.Temperature;
-import cz.fjerabek.temperatureController.UI.Animations.ProgressBarAnimation;
+import cz.fjerabek.temperatureController.temperature.Temperature;
+import cz.fjerabek.temperatureController.ui.Animations.ProgressBarAnimation;
 import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 import cz.fjerabek.temperatureController.restriction.ValueRangeRestriction;
 
@@ -41,12 +41,18 @@ public class StatusFragment extends Fragment {
     private ArcProgress[] pwr;
     private TextView[] tempText = new TextView[MainActivity.TEMP_COUNT];
     private TextView[] tempName = new TextView[MainActivity.PWR_COUNT];
+    private static StatusFragment instance;
 
     public StatusFragment() {
     }
 
-    public static StatusFragment newInstance() {
-        return new StatusFragment();
+    public static StatusFragment getInstance() {
+        if(instance != null) {
+            return instance;
+        } else {
+            instance = new StatusFragment();
+            return instance;
+        }
     }
 
     @Override
@@ -72,25 +78,25 @@ public class StatusFragment extends Fragment {
         temperatures.add(new Temperature(
                 getContext(),
                 null,
-                (ArcProgress) rootView.findViewById(R.id.temp1),
-                (ArcProgress) rootView.findViewById(R.id.temp1FromNotify),
-                (ArcProgress) rootView.findViewById(R.id.temp1ToNotify),
+                rootView.findViewById(R.id.temp1),
+                rootView.findViewById(R.id.temp1FromNotify),
+                rootView.findViewById(R.id.temp1ToNotify),
                 0));
 
         temperatures.add(new Temperature(
                 getContext(),
                 null,
-                (ArcProgress) rootView.findViewById(R.id.temp2),
-                (ArcProgress) rootView.findViewById(R.id.temp2FromNotify),
-                (ArcProgress) rootView.findViewById(R.id.temp3ToNotify),
+                rootView.findViewById(R.id.temp2),
+                rootView.findViewById(R.id.temp2FromNotify),
+                rootView.findViewById(R.id.temp3ToNotify),
                 0));
 
         temperatures.add(new Temperature(
                 getContext(),
                 null,
-                (ArcProgress) rootView.findViewById(R.id.temp3),
-                (ArcProgress) rootView.findViewById(R.id.temp3FromNotify),
-                (ArcProgress) rootView.findViewById(R.id.temp3ToNotify),
+                rootView.findViewById(R.id.temp3),
+                rootView.findViewById(R.id.temp3FromNotify),
+                rootView.findViewById(R.id.temp3ToNotify),
                 0));
 
 

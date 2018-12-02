@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.UI;
+package cz.fjerabek.temperatureController.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,14 +20,14 @@ public class Settings extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        final EditText ip = (EditText) findViewById(R.id.IP);
+        final EditText ip = findViewById(R.id.IP);
 
-        final EditText port = (EditText) findViewById(R.id.port);
+        final EditText port = findViewById(R.id.port);
 
         ip.setText(intent.getStringExtra("ip"));
         port.setText(String.valueOf(intent.getIntExtra("port", 10000)));
 
-        Button saveButton = (Button) findViewById(R.id.settingsSave);
+        Button saveButton = findViewById(R.id.settingsSave);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

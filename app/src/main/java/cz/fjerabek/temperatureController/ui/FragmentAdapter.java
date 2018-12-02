@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.UI;
+package cz.fjerabek.temperatureController.ui;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
