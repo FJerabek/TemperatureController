@@ -2,7 +2,7 @@ package cz.fjerabek.temperatureController.restriction;
 
 import android.content.Context;
 
-import cz.fjerabek.temperatureController.Temperature;
+import cz.fjerabek.temperatureController.temperature.Temperature;
 
 public class ValueRangeRestriction extends TemperatureRestriction {
     private float minValue;

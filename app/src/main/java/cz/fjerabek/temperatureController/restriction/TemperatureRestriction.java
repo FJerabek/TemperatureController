@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.fjerabek.temperatureController.Notification.notificationType.TemperatureNotifiable;
-import cz.fjerabek.temperatureController.Temperature;
-import cz.fjerabek.temperatureController.TemperatureCheckable;
+import cz.fjerabek.temperatureController.notification.notificationType.TemperatureNotifiable;
+import cz.fjerabek.temperatureController.temperature.Temperature;
+import cz.fjerabek.temperatureController.temperature.TemperatureCheckable;
 
 public abstract class TemperatureRestriction implements TemperatureCheckable, Comparable {
     private static int sid = 0;

@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.UI.fragments;
+package cz.fjerabek.temperatureController.ui.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -41,7 +41,7 @@ public class SetFragment extends Fragment {
     private TextView[] names;
 
 
-    public static SetFragment newInstance() {
+    public static SetFragment getInstance() {
         return new SetFragment();
     }
 
@@ -134,12 +134,12 @@ public class SetFragment extends Fragment {
                         if (Integer.parseInt(s.toString()) == defaults[finalI]) {
                             trackValues = true;
                             pow[finalI].setTextColor(ContextCompat.getColor(context, R.color.colorPwrDefault));
-                            iw[finalI].setImageResource(R.drawable.ic_check_circle_green_900_18dp);
+                            iw[finalI].setImageResource(R.drawable.ic_check_circle_green);
                             revert.setEnabled(false);
                         } else {
                             trackValues = false;
                             pow[finalI].setTextColor(ContextCompat.getColor(context, R.color.colorPwrOther));
-                            iw[finalI].setImageResource(R.drawable.ic_cancel_red_900_18dp);
+                            iw[finalI].setImageResource(R.drawable.ic_cancel_red);
                         }
                     }
                 }
@@ -165,12 +165,12 @@ public class SetFragment extends Fragment {
                     if (seekBar.getProgress() == defaults[finalI]){
                         trackValues = true;
                         pow[finalI].setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),R.color.colorPwrDefault));
-                        iw[finalI].setImageResource(R.drawable.ic_check_circle_green_900_18dp);
+                        iw[finalI].setImageResource(R.drawable.ic_check_circle_green);
                         revert.setEnabled(false);
                     } else {
                         trackValues = false;
                         pow[finalI].setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),R.color.colorPwrOther));
-                        iw[finalI].setImageResource(R.drawable.ic_cancel_red_900_18dp);
+                        iw[finalI].setImageResource(R.drawable.ic_cancel_red);
                     }
                 }
             });
@@ -196,12 +196,12 @@ public class SetFragment extends Fragment {
                     if (value == defaults[finalI]){
                         trackValues = true;
                         pow[finalI].setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),R.color.colorPwrDefault));
-                        iw[finalI].setImageResource(R.drawable.ic_check_circle_green_900_18dp);
+                        iw[finalI].setImageResource(R.drawable.ic_check_circle_green);
                         revert.setEnabled(false);
                     } else {
                         trackValues = false;
                         pow[finalI].setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),R.color.colorPwrOther));
-                        iw[finalI].setImageResource(R.drawable.ic_cancel_red_900_18dp);
+                        iw[finalI].setImageResource(R.drawable.ic_cancel_red);
                     }
 
                     pow[finalI].setText(String.valueOf(value));
@@ -231,13 +231,13 @@ public class SetFragment extends Fragment {
                     if (value == defaults[finalI]){
                         trackValues = true;
                         pow[finalI].setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),R.color.colorPwrDefault));
-                        iw[finalI].setImageResource(R.drawable.ic_check_circle_green_900_18dp);
+                        iw[finalI].setImageResource(R.drawable.ic_check_circle_green);
                         revert.setEnabled(false);
 
                     } else {
                         trackValues = false;
                         pow[finalI].setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),R.color.colorPwrOther));
-                        iw[finalI].setImageResource(R.drawable.ic_cancel_red_900_18dp);
+                        iw[finalI].setImageResource(R.drawable.ic_cancel_red);
                     }
 
                     pow[finalI].setText(String.valueOf(value));
@@ -280,10 +280,10 @@ public class SetFragment extends Fragment {
         if(pow[id] != null && iw[id] != null && context != null) {
             if (getValues()[id] == defaults[id]) {
                 pow[id].setTextColor(ContextCompat.getColor(context, R.color.colorPwrDefault));
-                iw[id].setImageResource(R.drawable.ic_check_circle_green_900_18dp);
+                iw[id].setImageResource(R.drawable.ic_check_circle_green);
             } else {
                 pow[id].setTextColor(ContextCompat.getColor(context, R.color.colorPwrOther));
-                iw[id].setImageResource(R.drawable.ic_cancel_red_900_18dp);
+                iw[id].setImageResource(R.drawable.ic_cancel_red);
             }
         }
 

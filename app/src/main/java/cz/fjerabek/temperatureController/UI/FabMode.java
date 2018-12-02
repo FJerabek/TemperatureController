@@ -1,5 +1,5 @@
-package cz.fjerabek.temperatureController.UI;
+package cz.fjerabek.temperatureController.ui;
 
 public enum FabMode {
-    CONNECTED,RECONNECTING,ERROR,DISCONNECTED
+    CONNECTED, CONNECTING,DISCONNECTED
 }

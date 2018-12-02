@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".UI.fragments.StatusFragment"
+    tools:context=".ui.fragments.StatusFragment"
     android:orientation="vertical"
     android:id="@+id/statusView">
 
@@ -47,8 +47,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/status"/>
-
-
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -336,9 +334,6 @@
 
             </GridLayout>
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
-
-
 
 </LinearLayout>

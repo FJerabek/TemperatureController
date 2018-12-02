@@ -32,4 +32,10 @@
     <string name="pwr2_name">Zásuvka 2</string>
     <string name="pwr3_name">Zásuvka 3</string>
     <string name="new_name">Nové jméno:</string>
+    <string name="connect">Připojit</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="temperature_notiffication">Nastavit oznamení při teplotě</string>
+    <string name="set_names">Nastavení pojmenování</string>
 </resources>

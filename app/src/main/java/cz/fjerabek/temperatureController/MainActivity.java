@@ -1,7 +1,5 @@
 package cz.fjerabek.temperatureController;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -19,13 +16,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,9 +24,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -49,41 +37,43 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import cz.fjerabek.temperatureController.UI.FabMode;
-import cz.fjerabek.temperatureController.UI.FragmentAdapter;
-import cz.fjerabek.temperatureController.UI.Settings;
-import cz.fjerabek.temperatureController.UI.fragments.SetFragment;
-import cz.fjerabek.temperatureController.UI.fragments.StatusFragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import cz.fjerabek.temperatureController.ui.FabMode;
+import cz.fjerabek.temperatureController.ui.FragmentAdapter;
+import cz.fjerabek.temperatureController.ui.Settings;
+import cz.fjerabek.temperatureController.ui.fragments.RestrictionFragment;
+import cz.fjerabek.temperatureController.ui.fragments.SetFragment;
+import cz.fjerabek.temperatureController.ui.fragments.StatusFragment;
 import cz.fjerabek.temperatureController.network.NetworkService;
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
 import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
+import cz.fjerabek.temperatureController.temperature.Temperature;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int SETTINGS_ACTIVITY_KEY = 1;
     public static final int TEMP_COUNT = 3;
     public static final int PWR_COUNT = 3;
+
     private String ip;
     private int port;
-    private Animation fabRotate;
-    private FloatingActionButton fab;
+
     private SetFragment setFragment;
     private StatusFragment statusFragment;
-
+    private RestrictionFragment restrictionFragment;
 
     private static NetworkService service;
     private ServiceConnection connection;
 
-    private ImageView sentIcon;
-    private ImageView recvIcon;
-    private TextView sentText;
-    private TextView recvText;
-    private long sentCount;
-    private long recvCount;
-    private AHBottomNavigation bottomNavigation;
-    private AHBottomNavigationViewPager viewPager;
-
+    @BindView(R.id.sentIcon) ImageView sentIcon;
+    @BindView(R.id.recvIcon) ImageView recvIcon;
+    @BindView(R.id.bottom_navigation) AHBottomNavigation bottomNavigation;
+    @BindView(R.id.container) AHBottomNavigationViewPager viewPager;
+    @BindView(R.id.status) ImageView statusIcon;
+    private Menu menu;
+    private Intent serviceIntent;
 
     private CountDownTimer timeoutTimer;
 
@@ -91,89 +81,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //------------------------------------------------------------------------------------------
-
-        final Intent serviceIntent = new Intent(this, NetworkService.class);
-        setupService();
-
-        bindService(serviceIntent, connection, BIND_IMPORTANT);
-
-        statusFragment = StatusFragment.newInstance();
-        setFragment = SetFragment.newInstance();
-
         setContentView(R.layout.activity_main);
 
-        bottomNavigation = findViewById(R.id.bottom_navigation);
-        sentIcon = findViewById(R.id.sentIcon);
-        recvIcon = findViewById(R.id.recvIcon);
-        sentText = findViewById(R.id.sentCount);
-        recvText = findViewById(R.id.recvCount);
-        fab = findViewById(R.id.fab);
-        viewPager = findViewById(R.id.container);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        setupService();
 
+        statusFragment = StatusFragment.getInstance();
+        setFragment = SetFragment.getInstance();
+        restrictionFragment = RestrictionFragment.getInstance();
 
-        viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager(), statusFragment, setFragment));
+        ButterKnife.bind(this);
+
+        viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager(), statusFragment, setFragment, restrictionFragment));
 
         setupBottomNavigation();
-
-        sentIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_upward));
-        recvIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_downward));
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         ip = settings.getString("ip", "192.168.0.101"); //default ip of server
         port = settings.getInt("port", 10000); //default port
 
-        fabRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate);
-        fabRotate.setRepeatCount(Animation.INFINITE);
-
-        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                if (service != null && service.isRunning()) {
-                    stopService();
-                    return;
-                }
-                boolean wifiHotspot = false;
-                try {
-                    final Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled"); //Check if wifi or hotspot is enabled
-                    method.setAccessible(true);
-                    wifiHotspot = (Boolean) method.invoke(wifiManager);
-                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-
-                ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-                NetworkInfo wifi = null;
-                if (connManager != null) {
-                    wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                }
-                if (!wifiManager.isWifiEnabled() && !wifiHotspot) {
-                    Snackbar.make(view, "Wifi není zapnuto!", Snackbar.LENGTH_LONG).setAction("ZAPNOUT", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) { //If wifi is not enabled make snackbar with option
-                            wifiManager.setWifiEnabled(true);
-                        }
-                    }).show();
-                    return;
-                }
-
-                if (!wifi.isConnected() && !wifiHotspot) {
-                    Snackbar.make(view, "Wifi není připojeno k síti!", Snackbar.LENGTH_LONG).show(); //Check if wifi is connected to network
-                    return;
-                }
-
-                if (service == null || !service.isRunning()) {
-                    startService(serviceIntent);
-                    bindService(serviceIntent, connection, BIND_IMPORTANT);
-                }
-            }
-        });
-
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
@@ -199,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        fabShow(FabMode.DISCONNECTED, true);
+                        setStatus(FabMode.DISCONNECTED);
                     }
                 });
                 stopService();
@@ -218,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         int restrictionid = getIntent().getIntExtra("restrictionID", 0);
         int temperatureid = getIntent().getIntExtra("temperatureID", 0);
-        System.out.println("new Intent: " + "\nRestrictionID: " + restrictionid + "\nTempID: " + temperatureid);
         Temperature temp = statusFragment.getTemperatureById(temperatureid);
         if (temp != null) {
             TemperatureRestriction res = temp.getRestrictionById(restrictionid);
@@ -234,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
         LayoutInflater inflater = getLayoutInflater();
 
-        View layout = inflater.inflate(R.layout.name_popup, (ViewGroup) findViewById(R.id.statusView), false);
+        View layout = inflater.inflate(R.layout.name_popup, findViewById(R.id.statusView), false);
 
         final EditText[] tempNameEdit = new EditText[TEMP_COUNT];
         tempNameEdit[0] = layout.findViewById(R.id.temp1Name);
@@ -320,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         LayoutInflater layoutInflater = getLayoutInflater();
-        View layout = layoutInflater.inflate(R.layout.new_notify_values_popup, (ViewGroup) findViewById(R.id.statusView), false); //Set layout to use
+        View layout = layoutInflater.inflate(R.layout.new_notify_values_popup, findViewById(R.id.statusView), false); //Set layout to use
 
         final TextView[] notifyTempNames = new TextView[TEMP_COUNT];
         notifyTempNames[0] = layout.findViewById(R.id.notifyTempName1);
@@ -423,6 +348,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -446,32 +372,53 @@ public class MainActivity extends AppCompatActivity {
                 namePopup();
                 break;
 
+            case R.id.connect:
+                connect(serviceIntent, findViewById(R.id.container));
+
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Slowly change colors of Floating Action Button
-     *
-     * @param fab       FAB
-     * @param colorFrom color to change from
-     * @param colorTo   color to change to
-     * @param duration  duration of the change in milliseconds
-     */
-    private void fabColorTransition(final FloatingActionButton fab, int colorFrom, int colorTo, long duration) {
-        if (colorFrom == -1) {
-            fab.setBackgroundTintList(ColorStateList.valueOf(colorTo));
+    private void connect(Intent serviceIntent, View snackbarView) {
+        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (service != null && service.isRunning()) {
+            stopService();
+            return;
         }
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(duration);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                fab.setBackgroundTintList(ColorStateList.valueOf((int) animation.getAnimatedValue()));
-            }
-        });
-        colorAnimation.start();
+        boolean wifiHotspot = false;
+        try {
+            final Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled"); //Check if wifi or hotspot is enabled
+            method.setAccessible(true);
+            wifiHotspot = (Boolean) method.invoke(wifiManager);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = null;
+        if (connManager != null) {
+            wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        }
+        if (!wifiManager.isWifiEnabled() && !wifiHotspot) {
+            Snackbar.make(snackbarView, "Wifi není zapnuto!", Snackbar.LENGTH_LONG).setAction("ZAPNOUT", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) { //If wifi is not enabled make snackbar with option
+                    wifiManager.setWifiEnabled(true);
+                }
+            }).show();
+            return;
+        }
+
+        if (!wifi.isConnected() && !wifiHotspot) {
+            Snackbar.make(snackbarView, "Wifi není připojeno k síti!", Snackbar.LENGTH_LONG).show(); //Check if wifi is connected to network
+            return;
+        }
+
+        if (service == null || !service.isRunning()) {
+            startService(serviceIntent);
+            bindService(serviceIntent, connection, BIND_IMPORTANT);
+        }
     }
 
     public float[][] getSavedNotifyTemps() {
@@ -501,56 +448,32 @@ public class MainActivity extends AppCompatActivity {
      * Shows different states of Floating Action Button
      *
      * @param mode    Fab mode
-     * @param animate allow animations
      */
 
-    public void fabShow(final FabMode mode, final boolean animate) {//Shows FAB in preset states
+    public void setStatus(final FabMode mode) {//Shows FAB in preset states
         final Handler handler = new Handler(getMainLooper());
-        int defaultColor;
-        try {
-            defaultColor = fab.getBackgroundTintList().getDefaultColor();
-        } catch (NullPointerException e) {
-            defaultColor = -1;
-        }
-        final int finalDefaultColor = defaultColor;
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                fab.clearAnimation();
-                switch (mode) {
-                    case CONNECTED: //Connected state
-                        fab.setClickable(true);
-                        fab.setImageResource(R.drawable.ic_done_white_48dp);
-                        fabColorTransition(fab, finalDefaultColor,
-                                ContextCompat.getColor(getApplicationContext(), R.color.FABcolorConnected), 1000);
-                        break;
+        handler.post(() -> {
+            switch (mode) {
+                case CONNECTED: //Connected state
+                    menu.findItem(R.id.connect).setEnabled(true);
+                    statusIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_green));
+                    break;
 
-                    case ERROR: //Error state
-                        fab.setClickable(true);
-                        fab.setImageResource(R.drawable.ic_report_problem_white_48dp);
-                        fabColorTransition(fab, finalDefaultColor,
-                                ContextCompat.getColor(getApplicationContext(), R.color.FABcolorError), 1000);
-                        break;
-                    case RECONNECTING: //Reconnecting state
-                        fab.setClickable(false);
-                        fab.setImageResource(R.drawable.ic_autorenew_white_48dp);
-                        fabColorTransition(fab, finalDefaultColor,
-                                ContextCompat.getColor(getApplicationContext(), R.color.FABcolorReconnecting), 1000);
-                        if (animate)
-                            fab.startAnimation(fabRotate);
-                        break;
-                    case DISCONNECTED: //Disconnected state
-                        fab.setClickable(true);
-                        fab.setImageResource(R.drawable.ic_compare_arrows_white_48dp);
-                        fabColorTransition(fab, finalDefaultColor,
-                                ContextCompat.getColor(getApplicationContext(), R.color.FABcolorDisconnected), 1000);
-                }
+                case CONNECTING: //Reconnecting state
+                    menu.findItem(R.id.connect).setEnabled(false);
+                    statusIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info));
+                    break;
+                case DISCONNECTED: //Disconnected state
+                    menu.findItem(R.id.connect).setEnabled(true);
+                    statusIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_cancel_red));
             }
         });
     }
 
     public void setupService() {
+        serviceIntent = new Intent(this, NetworkService.class);
+
         connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -560,88 +483,54 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.service.setConnectionStatusChangeListener(new NetworkService.OnConnectionStatusChange() {
                     @Override
                     public void connected() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                restartTimeoutTimer();
-                                fabShow(FabMode.CONNECTED, true);
-                            }
-                        });
+
                     }
 
                     @Override
                     public void reconnecting() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                fabShow(FabMode.RECONNECTING, true);
-                            }
-                        });
+                        runOnUiThread(() -> setStatus(FabMode.CONNECTING));
                     }
 
                     @Override
                     public void connectionLost() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (timeoutTimer != null) timeoutTimer.cancel();
-                                Snackbar.make(fab, "Spojení bylo ztraceno", Snackbar.LENGTH_LONG).
+                        runOnUiThread(() -> {
+                            if (timeoutTimer != null) timeoutTimer.cancel();
+                            Snackbar.make(findViewById(R.id.container), "Spojení bylo ztraceno", Snackbar.LENGTH_LONG).
 
-                                        show();
-                                fabShow(FabMode.ERROR, true);
-                            }
+                                    show();
+                            setStatus(FabMode.DISCONNECTED);
                         });
                     }
 
                     @Override
                     public void disconnected() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                fabShow(FabMode.DISCONNECTED, true);
-                            }
-                        });
+                        runOnUiThread(() -> setStatus(FabMode.DISCONNECTED));
                     }
                 });
 
                 MainActivity.service.setPacketReceiver(new NetworkService.OnPacketReceive() {
                     @Override
                     public void receiveUpdate(final Packet packet) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                restartTimeoutTimer();
-                                recvCount++;
-                                recvText.setText(String.valueOf(recvCount));
-                                recvIcon.setVisibility(View.VISIBLE);
-                                final Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                recvIcon.setVisibility(View.INVISIBLE);
-                                            }
-                                        });
-                                    }
-                                }, 200);
+                        runOnUiThread(() -> {
+                            restartTimeoutTimer();
+                            recvIcon.setVisibility(View.VISIBLE);
+                            final Handler handler = new Handler();
+                            handler.postDelayed(() -> runOnUiThread(() -> recvIcon.setVisibility(View.INVISIBLE)), 200);
 
-                                fabShow(FabMode.CONNECTED, false);
-                                float[] temp1 = packet.getTemp();
-                                for (int i = 0; i < temp1.length; i++) {
-                                    statusFragment.setTemp(i, temp1[i]);
-                                }
-
-                                int[] pwr = packet.getPwr();
-                                for (int i = 0; i < pwr.length; i++) {
-                                    statusFragment.setPwr(i, pwr[i]);
-                                    setFragment.setDefault(i, pwr[i]);
-                                }
-
-                                statusFragment.setStatus(packet.getState());
-                                statusFragment.setMode(packet.getMode());
+                            setStatus(FabMode.CONNECTED);
+                            float[] temp1 = packet.getTemp();
+                            for (int i = 0; i < temp1.length; i++) {
+                                statusFragment.setTemp(i, temp1[i]);
                             }
+
+                            int[] pwr = packet.getPwr();
+                            for (int i = 0; i < pwr.length; i++) {
+                                statusFragment.setPwr(i, pwr[i]);
+                                setFragment.setDefault(i, pwr[i]);
+                            }
+
+                            statusFragment.setStatus(packet.getState());
+                            statusFragment.setMode(packet.getMode());
                         });
                     }
 
@@ -658,25 +547,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void sendStatusRq() {
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                sentCount++;
-                                sentText.setText(String.valueOf(sentCount));
-                                sentIcon.setVisibility(View.VISIBLE);
-                                final Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                sentIcon.setVisibility(View.INVISIBLE);
-                                            }
-                                        });
-                                    }
-                                }, 200);
-                            }
+                        runOnUiThread(() -> {
+                            sentIcon.setVisibility(View.VISIBLE);
+                            final Handler handler = new Handler();
+                            handler.postDelayed(() -> runOnUiThread(() -> sentIcon.setVisibility(View.INVISIBLE)), 200);
                         });
                     }
                 });
@@ -691,20 +565,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
+
+        bindService(serviceIntent, connection, BIND_IMPORTANT);
     }
 
     public void setupBottomNavigation() {
 
-        bottomNavigation.addItem(new AHBottomNavigationItem("TEST", R.drawable.ic_add_white_24dp));
-        bottomNavigation.addItem(new AHBottomNavigationItem("TEST2", R.drawable.ic_arrow_upward));
-        bottomNavigation.manageFloatingActionButtonBehavior(fab);
+        bottomNavigation.addItem(new AHBottomNavigationItem("Status", R.drawable.ic_info_outline_black_24dp));
+        bottomNavigation.addItem(new AHBottomNavigationItem("Nastavení", R.drawable.ic_settings_black_24dp));
+        bottomNavigation.addItem(new AHBottomNavigationItem("Notifikace", R.drawable.ic_notifications_black));
 
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                viewPager.setCurrentItem(position, true);
-                return true;
-            }
+        bottomNavigation.setAccentColor(getResources().getColor(R.color.colorPrimaryDark));
+
+        bottomNavigation.setOnTabSelectedListener((position, wasSelected) -> {
+            viewPager.setCurrentItem(position, true);
+            return true;
         });
     }
 }

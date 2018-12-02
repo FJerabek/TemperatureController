@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.fragments.SetFragment">
+    tools:context=".ui.fragments.SetFragment">
 
     <LinearLayout
         android:id="@+id/P1Layout"
@@ -21,7 +21,7 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/power"
+            android:src="@drawable/ic_power"
             android:layout_gravity="center_vertical"/>
         <EditText
             android:id="@+id/P1"
@@ -78,7 +78,7 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/power"
+            android:src="@drawable/ic_power"
             android:layout_gravity="center_vertical"/>
         <EditText
             android:id="@+id/P2"
@@ -137,7 +137,7 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/power"
+            android:src="@drawable/ic_power"
             android:layout_gravity="center_vertical"/>
 
         <EditText

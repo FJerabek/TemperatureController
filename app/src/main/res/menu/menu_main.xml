@@ -10,13 +10,16 @@
     <item
         android:id="@+id/setNotifyValue"
         android:orderInCategory="1"
-        android:title="Nastavit oznamení při teplotě"/>
+        android:title="@string/temperature_notiffication"/>
     <item
         android:id="@+id/nameSetting"
         android:orderInCategory="2"
-        android:title="Nastavení pojmenování"
-        >
+        android:title="@string/set_names"
+        />
 
-    </item>
-
+    <item
+        android:id="@+id/connect"
+        android:icon="@drawable/ic_compare_arrows_white"
+        android:title="@string/connect"
+        app:showAsAction="ifRoom"/>
 </menu>
