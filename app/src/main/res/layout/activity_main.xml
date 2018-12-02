@@ -80,7 +80,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -96,6 +96,12 @@
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"
         android:src="@drawable/ic_compare_arrows_white_48dp" />
+
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_gravity="end|bottom"
+        android:layout_height="wrap_content"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

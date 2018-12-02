@@ -2,8 +2,8 @@
 <resources>
     <color name="hint_foreground_material_light">#00000000</color>
     <color name="hint_foreground_material_dark">#00000000</color>
-    <color name="colorPrimary">#2979ff</color>
-    <color name="colorPrimaryDark">#304ffe</color>
+    <color name="colorPrimary">#689f38</color>
+    <color name="colorPrimaryDark">#33691e</color>
     <color name="colorAccent">#ff1744</color>
     <color name="FABcolorDisconnected">#ff3d00</color>
     <color name="FABcolorReconnecting">#FF6D00</color>

@@ -40,8 +40,6 @@ public class SetFragment extends Fragment {
     private ImageView[] iw;
     private TextView[] names;
 
-    public SetFragment() {
-    }
 
     public static SetFragment newInstance() {
         return new SetFragment();
