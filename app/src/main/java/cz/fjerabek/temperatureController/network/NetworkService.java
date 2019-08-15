@@ -1,16 +1,22 @@
 package cz.fjerabek.temperatureController.network;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -72,8 +78,16 @@ public class NetworkService extends Service implements ConnectionCreator.AsyncRe
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
+        NotificationChannel channel = new NotificationChannel("cz.fjerabek.temperatureController", "Temperature controller network service", NotificationManager.IMPORTANCE_NONE);
+        channel.setLightColor(Color.GREEN);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        NotificationManager service = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        service.createNotificationChannel(channel);
+
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(),"cz.fjerabek.temperatureController");
         mBuilder.setContentTitle(getResources().getString(R.string.app_name));
         mBuilder.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.launcher));
@@ -243,7 +257,9 @@ public class NetworkService extends Service implements ConnectionCreator.AsyncRe
 
     @Override
     public void onDestroy() {
-        networkThread.quit();
+        if(networkThread != null) {
+            networkThread.quit();
+        }
         super.onDestroy();
     }
 

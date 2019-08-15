@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.ui;
+package cz.fjerabek.temperatureController.UI;
 
 import android.app.Activity;
 import android.content.Intent;

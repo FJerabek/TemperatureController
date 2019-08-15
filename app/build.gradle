@@ -31,7 +31,7 @@ android {
 
     defaultConfig {
         applicationId "cz.fjerabek.temperatureController"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 2
         versionName "2.1." + versionBuild
@@ -69,6 +69,7 @@ dependencies {
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
     implementation 'com.github.TellH:RecyclerTreeView:1.2.0'
+    implementation "com.android.support:gridlayout-v7:28.0.0"
 
     implementation 'com.jakewharton:butterknife:9.0.0-rc2'
 

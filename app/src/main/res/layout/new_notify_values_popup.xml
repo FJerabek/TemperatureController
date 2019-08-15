@@ -4,128 +4,53 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <GridLayout
+        android:layout_margin="10dp"
         android:id="@+id/popuplayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp">
-        <TextView
-            android:id="@+id/notifyTempName1"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:text="1. "/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="od"/>
-        <EditText
-            android:id="@+id/notifyTemp1From"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"/>
+        android:layout_marginEnd="10dp"
+        android:columnCount="2"
+        android:rowCount="4"
+        >
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="do: "/>
-
-        <EditText
-            android:id="@+id/notifyTemp1To"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"/>
-
-        <CheckBox
-            android:id="@+id/cbTemp1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ON"
-            android:layout_gravity="center_vertical"/>
-        <!--<Button-->
-        <!--android:id="@+id/set"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/set"/>-->
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/popuplayout2"
-        android:layout_below="@+id/popuplayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp">
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="70dp"
-            android:id="@+id/notifyTempName2"
-            android:text="2. "/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="od"/>
-        <EditText
-            android:id="@+id/notifyTemp2From"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"/>
+            android:layout_row="0"
+            android:layout_column="0"
+            android:text="Čidlo: "/>
+        <Spinner
+            android:id="@+id/temperatureSelector"
+            android:layout_width="150dp"
+            android:layout_row="0"
+            android:layout_column="1">
+        </Spinner>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="do: "/>
+            android:text="Min. hodnota:"
+            android:layout_row="1"
+            android:layout_column="0"/>
 
         <EditText
-            android:id="@+id/notifyTemp2To"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"/>
-
-        <CheckBox
-            android:id="@+id/cbTemp2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ON"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/popuplayout3"
-        android:layout_below="@+id/popuplayout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp">
-        <TextView
-            android:id="@+id/notifyTempName3"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:text="3. "/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="od"/>
-        <EditText
-            android:id="@+id/notifyTemp3From"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"/>
+            android:id="@+id/setRestrictionMinVal"
+            android:layout_width="150dp"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:inputType="numberDecimal|numberSigned" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="do: "/>
+            android:layout_row="2"
+            android:layout_column="0"
+            android:text="Max. hodnota:"/>
 
         <EditText
-            android:id="@+id/notifyTemp3To"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"/>
+            android:id="@+id/setRestrictionMaxVal"
+            android:layout_width="150dp"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:inputType="numberDecimal|numberSigned" />
 
-        <CheckBox
-            android:id="@+id/cbTemp3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ON"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
+
+
+    </GridLayout>
 </RelativeLayout>

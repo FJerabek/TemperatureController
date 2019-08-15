@@ -7,7 +7,7 @@ import com.github.lzyzsd.circleprogress.ArcProgress;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.fjerabek.temperatureController.ui.Animations.ProgressBarAnimation;
+import cz.fjerabek.temperatureController.UI.Animations.ProgressBarAnimation;
 import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 import cz.fjerabek.temperatureController.restriction.ValueRangeRestriction;
 
@@ -16,14 +16,12 @@ public class Temperature {
     private int id;
     private Context context;
     private String name;
-    private ArcProgress status, lowTempCheck, highTempCheck;
+    private ArcProgress status;
     private float value;
     private List<TemperatureRestriction> restrictions;
 
 
-    public Temperature(Context context, String name, ArcProgress status, ArcProgress lowTempCheck, ArcProgress highTempCheck, float value) {
-        this.lowTempCheck = lowTempCheck;
-        this.highTempCheck = highTempCheck;
+    public Temperature(Context context, String name, ArcProgress status, float value) {
         this.name = name;
         this.status = status;
         this.value = value;
@@ -39,14 +37,6 @@ public class Temperature {
         restrictions.add(restriction);
         if(restriction instanceof ValueRangeRestriction) {
             ValueRangeRestriction vrestriction = (ValueRangeRestriction) restriction;
-
-            ProgressBarAnimation hAnimation = new ProgressBarAnimation(highTempCheck, highTempCheck.getProgress(), (int) vrestriction.getMaxValue());
-            hAnimation.setDuration(500);
-            highTempCheck.startAnimation(hAnimation);
-
-            ProgressBarAnimation lAnimation = new ProgressBarAnimation(lowTempCheck, lowTempCheck.getProgress(), (int) vrestriction.getMinValue());
-            lAnimation.setDuration(500);
-            lowTempCheck.startAnimation(lAnimation);
         }
     }
 
@@ -99,5 +89,10 @@ public class Temperature {
                 restriction.notifyListeners(context);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

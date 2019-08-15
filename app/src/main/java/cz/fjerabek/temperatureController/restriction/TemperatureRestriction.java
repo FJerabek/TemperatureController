@@ -11,6 +11,7 @@ import cz.fjerabek.temperatureController.temperature.Temperature;
 import cz.fjerabek.temperatureController.temperature.TemperatureCheckable;
 
 public abstract class TemperatureRestriction implements TemperatureCheckable, Comparable {
+    private static String name = "Teplotní omezení";
     private static int sid = 0;
     private int id;
     private Temperature temperature;
@@ -24,6 +25,10 @@ public abstract class TemperatureRestriction implements TemperatureCheckable, Co
         sid++;
         temperature.addRestriction(this);
         enabled = true;
+    }
+
+    public String getName() {
+        return temperature.getName() + ": " + name;
     }
 
     public int getId() {
@@ -46,16 +51,26 @@ public abstract class TemperatureRestriction implements TemperatureCheckable, Co
         return listeners.remove(listener);
     }
 
+    public List<TemperatureNotifiable> getListeners() {
+        return listeners;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        if(enabled) {
+            notified = false;
+        }
+    }
+
     public Temperature getTemperature() {
         return temperature;
     }
 
     public void notifyListeners(Context context) {
-        if(!notified) {
+        if(!notified && enabled) {
             for (TemperatureNotifiable listener : listeners) {
                 listener.outOfRange(context, this);
             }
-            notified = true;
         }
     }
 
@@ -64,6 +79,7 @@ public abstract class TemperatureRestriction implements TemperatureCheckable, Co
             listener.dismiss(context, this);
         }
         enabled = false;
+        notified = false;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.ui.fragments;
+package cz.fjerabek.temperatureController.UI.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.fjerabek.temperatureController.MainActivity;
+import cz.fjerabek.temperatureController.notification.notificationType.AudioNotification;
 import cz.fjerabek.temperatureController.notification.notificationType.StatusNotification;
 import cz.fjerabek.temperatureController.notification.notificationType.TestNotification;
 import cz.fjerabek.temperatureController.R;
+import cz.fjerabek.temperatureController.notification.notificationType.VibrationNotification;
 import cz.fjerabek.temperatureController.temperature.Temperature;
-import cz.fjerabek.temperatureController.ui.Animations.ProgressBarAnimation;
+import cz.fjerabek.temperatureController.UI.Animations.ProgressBarAnimation;
 import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 import cz.fjerabek.temperatureController.restriction.ValueRangeRestriction;
 
@@ -37,7 +39,7 @@ import cz.fjerabek.temperatureController.restriction.ValueRangeRestriction;
  */
 public class StatusFragment extends Fragment {
     private TextView status, mode;
-    private List<Temperature> temperatures;
+    public static List<Temperature> temperatures;
     private ArcProgress[] pwr;
     private TextView[] tempText = new TextView[MainActivity.TEMP_COUNT];
     private TextView[] tempName = new TextView[MainActivity.PWR_COUNT];
@@ -79,32 +81,19 @@ public class StatusFragment extends Fragment {
                 getContext(),
                 null,
                 rootView.findViewById(R.id.temp1),
-                rootView.findViewById(R.id.temp1FromNotify),
-                rootView.findViewById(R.id.temp1ToNotify),
                 0));
 
         temperatures.add(new Temperature(
                 getContext(),
                 null,
                 rootView.findViewById(R.id.temp2),
-                rootView.findViewById(R.id.temp2FromNotify),
-                rootView.findViewById(R.id.temp3ToNotify),
                 0));
 
         temperatures.add(new Temperature(
                 getContext(),
                 null,
                 rootView.findViewById(R.id.temp3),
-                rootView.findViewById(R.id.temp3FromNotify),
-                rootView.findViewById(R.id.temp3ToNotify),
                 0));
-
-
-        TemperatureRestriction restriction = new ValueRangeRestriction(temperatures.get(1), 0,50); //TODO: ADD restriction managing page
-        restriction.addListener(new StatusNotification());
-//        restriction.addListener(new VibrationNotification(new long[]{500L, 500L}));
-        restriction.addListener(new TestNotification());
-
 
         setRenameListeners();
 
@@ -116,54 +105,7 @@ public class StatusFragment extends Fragment {
         tempText[1] = rootView.findViewById(R.id.temp2Value);
         tempText[2] = rootView.findViewById(R.id.temp3Value);
 
-        updateNotifyValues();
-
         return rootView;
-    }
-
-
-    public void updateNotifyValues() {
-        for(Temperature temp : temperatures) {
-        }
-    //TODO: Fix value notification progress bars
-//        for (int i = 0; i < notifyProgress.length; i++) {
-//            for (int x = 0; x < notifyProgress[i].length; x++) {
-//                ProgressBarAnimation animation = new ProgressBarAnimation(notifyProgress[i][x], notifyProgress[i][x].getProgress(), (int) TemperatureChecker.getTemps()[i][x]);
-//                animation.setDuration(500);
-//                notifyProgress[i][x].startAnimation(animation);
-//                notifyProgress[i][x].setProgress((int) TemperatureChecker.getTemps()[i][x]);
-//
-//                if(!TemperatureChecker.getState()[i]) {
-//                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), notifyProgress[i][x].getFinishedStrokeColor(), ContextCompat.getColor(getContext(), R.color.notifyTempBarColorOff));
-//                    colorAnimation.setDuration(500);
-//                    final int finalI = i;
-//                    final int finalX = x;
-//                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                        @Override
-//                        public void onAnimationUpdate(ValueAnimator animation) {
-//                            notifyProgress[finalI][finalX].setFinishedStrokeColor((int) animation.getAnimatedValue());
-//                            notifyProgress[finalI][finalX].setTextColor((int) animation.getAnimatedValue());
-//                        }
-//                    });
-//                    colorAnimation.start();
-//
-//                } else {
-//                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), notifyProgress[i][x].getFinishedStrokeColor(), ContextCompat.getColor(getContext(), R.color.temperatureBarColor));
-//                    colorAnimation.setDuration(500);
-//                    final int finalI1 = i;
-//                    final int finalX1 = x;
-//                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                        @Override
-//                        public void onAnimationUpdate(ValueAnimator animation) {
-//                            notifyProgress[finalI1][finalX1].setFinishedStrokeColor((int) animation.getAnimatedValue());
-//                            notifyProgress[finalI1][finalX1].setTextColor((int) animation.getAnimatedValue());
-//                        }
-//                    });
-//                    colorAnimation.start();
-//
-//                }
-//            }
-//        }
     }
 
     public List<Temperature> getTemperatures() {

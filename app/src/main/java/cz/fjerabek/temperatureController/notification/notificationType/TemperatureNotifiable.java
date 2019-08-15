@@ -18,6 +18,8 @@ public abstract class TemperatureNotifiable implements Comparable<TemperatureNot
 
     public abstract void dismiss(Context context, TemperatureRestriction restriction);
 
+    public abstract String getName();
+
     public int getId() {
         return id;
     }

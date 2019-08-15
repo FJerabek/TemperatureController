@@ -19,14 +19,18 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -39,12 +43,19 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cz.fjerabek.temperatureController.ui.FabMode;
-import cz.fjerabek.temperatureController.ui.FragmentAdapter;
-import cz.fjerabek.temperatureController.ui.Settings;
-import cz.fjerabek.temperatureController.ui.fragments.RestrictionFragment;
-import cz.fjerabek.temperatureController.ui.fragments.SetFragment;
-import cz.fjerabek.temperatureController.ui.fragments.StatusFragment;
+import cz.fjerabek.temperatureController.notification.TemperatureChecker;
+import cz.fjerabek.temperatureController.notification.notificationType.AudioNotification;
+import cz.fjerabek.temperatureController.notification.notificationType.StatusNotification;
+import cz.fjerabek.temperatureController.notification.notificationType.TemperatureNotifiable;
+import cz.fjerabek.temperatureController.notification.notificationType.TestNotification;
+import cz.fjerabek.temperatureController.notification.notificationType.VibrationNotification;
+import cz.fjerabek.temperatureController.restriction.ValueRangeRestriction;
+import cz.fjerabek.temperatureController.UI.FabMode;
+import cz.fjerabek.temperatureController.UI.FragmentAdapter;
+import cz.fjerabek.temperatureController.UI.Settings;
+import cz.fjerabek.temperatureController.UI.fragments.RestrictionFragment;
+import cz.fjerabek.temperatureController.UI.fragments.SetFragment;
+import cz.fjerabek.temperatureController.UI.fragments.StatusFragment;
 import cz.fjerabek.temperatureController.network.NetworkService;
 import cz.fjerabek.temperatureController.network.packet.Packet;
 import cz.fjerabek.temperatureController.network.packet.PacketParser;
@@ -143,12 +154,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         int restrictionid = getIntent().getIntExtra("restrictionID", 0);
-        int temperatureid = getIntent().getIntExtra("temperatureID", 0);
-        Temperature temp = statusFragment.getTemperatureById(temperatureid);
-        if (temp != null) {
-            TemperatureRestriction res = temp.getRestrictionById(restrictionid);
-            if (res != null) {
-                res.dismissListeners(getApplicationContext());
+        for(TemperatureRestriction rest : TemperatureChecker.getRestrictions()) {
+            if(rest.getId() == restrictionid) {
+                rest.dismissListeners(getApplicationContext());
+                break;
             }
         }
     }
@@ -231,85 +240,31 @@ public class MainActivity extends AppCompatActivity {
      */
     public void newNotifValuePopup() {
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        final SharedPreferences.Editor editor = settings.edit();
-
-        ArrayList<String> defTempNames = new ArrayList<>();
-        defTempNames.add(getResources().getString(R.string.temp1_name));
-        defTempNames.add(getResources().getString(R.string.temp2_name));
-        defTempNames.add(getResources().getString(R.string.temp3_name));
-
-        String[] tempNames = new String[MainActivity.TEMP_COUNT];
-        for (int i = 0; i < MainActivity.TEMP_COUNT; i++) {
-            tempNames[i] = settings.getString("tempName" + i, "");
-        }
-
         LayoutInflater layoutInflater = getLayoutInflater();
         View layout = layoutInflater.inflate(R.layout.new_notify_values_popup, findViewById(R.id.statusView), false); //Set layout to use
+        Spinner spinner = layout.findViewById(R.id.temperatureSelector);
+        EditText min = layout.findViewById(R.id.setRestrictionMinVal);
+        EditText max = layout.findViewById(R.id.setRestrictionMaxVal);
 
-        final TextView[] notifyTempNames = new TextView[TEMP_COUNT];
-        notifyTempNames[0] = layout.findViewById(R.id.notifyTempName1);
-        notifyTempNames[1] = layout.findViewById(R.id.notifyTempName2);
-        notifyTempNames[2] = layout.findViewById(R.id.notifyTempName3);
-
-        for (int i = 0; i < tempNames.length; i++) {
-            String name = tempNames[i] != null && !tempNames[i].trim().equals("") ? tempNames[i].trim() : defTempNames.get(i);
-            notifyTempNames[i].setText(name.equals("") ? defTempNames.get(i) : name);
-        }
-
-        final EditText[][] notifyEditTexts = new EditText[TEMP_COUNT][2];
-
-        notifyEditTexts[0][0] = layout.findViewById(R.id.notifyTemp1From);
-        notifyEditTexts[0][1] = layout.findViewById(R.id.notifyTemp1To);
-        notifyEditTexts[1][0] = layout.findViewById(R.id.notifyTemp2From);
-        notifyEditTexts[1][1] = layout.findViewById(R.id.notifyTemp2To);
-        notifyEditTexts[2][0] = layout.findViewById(R.id.notifyTemp3From);
-        notifyEditTexts[2][1] = layout.findViewById(R.id.notifyTemp3To);
-
-        final CheckBox[] notifyCB = new CheckBox[TEMP_COUNT];
-        notifyCB[0] = layout.findViewById(R.id.cbTemp1);
-        notifyCB[1] = layout.findViewById(R.id.cbTemp2);
-        notifyCB[2] = layout.findViewById(R.id.cbTemp3);
-
-        for (int i = 0; i < notifyEditTexts.length; i++) {
-            for (int x = 0; x < notifyEditTexts[i].length; x++) {
-                notifyEditTexts[i][x].setText(String.valueOf(getSavedNotifyTemps()[i][x]));
-            }
-        }
-
-        for (int i = 0; i < notifyCB.length; i++) {
-            notifyCB[i].setChecked(getNotifyState()[i]);
-        }
+        spinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, statusFragment.getTemperatures()));
 
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Oznámení o teplotě");
+        alert.setTitle("Přidání notifikace");
         alert.setView(layout);
         alert.setCancelable(true);
         alert.setIcon(R.mipmap.launcher);
 
-        alert.setPositiveButton("Nastavit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) { //TODO: FIX adding restriction
-                float[][] notifyValues = new float[PacketParser.TEMP_COUNT][2];
-                for (int i = 0; i < notifyEditTexts.length; i++) {
-//                    TemperatureChecker.setState(i, notifyCB[i].isChecked());
-                    editor.putBoolean("state" + i, notifyCB[i].isChecked());
-                    for (int x = 0; x < notifyEditTexts[i].length; x++) {
-                        float newValue;
-                        if (notifyEditTexts[i][x].getText().toString().equals("")) {
-                            newValue = 0;
-                        } else
-                            newValue = Float.parseFloat(notifyEditTexts[i][x].getText().toString());
-                        editor.putFloat("notifyValues" + i + ":" + x, newValue);
-                        notifyValues[i][x] = newValue;
-                    }
-                }
-//                TemperatureChecker.setTemps(notifyValues);
-                editor.apply();
+        alert.setPositiveButton("Nastavit", (dialog, which) -> { //TODO: FIX adding restriction
+            Temperature selectedTemp = (Temperature)spinner.getSelectedItem();
+            float minValue = Float.parseFloat(min.getText().toString());
+            float maxValue = Float.parseFloat(max.getText().toString());
 
-                statusFragment.updateNotifyValues();
-            }
+            ValueRangeRestriction restriction = new ValueRangeRestriction(selectedTemp, minValue, maxValue);
+            restriction.addListener(new AudioNotification());
+            restriction.addListener(new VibrationNotification(new long[]{100, 1000, 100}));
+            restriction.addListener(new StatusNotification());
+            TemperatureChecker.addRestriction(restriction);
         });
 
         AlertDialog dialog = alert.create();
@@ -425,7 +380,15 @@ public class MainActivity extends AppCompatActivity {
         float[][] notifyVal = new float[TEMP_COUNT][2];
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
+
         for (int i = 0; i < TEMP_COUNT; i++) {
+            ValueRangeRestriction restriction = new ValueRangeRestriction(StatusFragment.temperatures.get(i), notifyVal[i][0], notifyVal[i][1]);
+            restriction.addListener(new AudioNotification());
+            restriction.addListener(new StatusNotification());
+            restriction.addListener(new VibrationNotification(new long[] {1000,1000,1000}));
+
+            TemperatureChecker.addRestriction(restriction);
+
             for (int x = 0; x < 2; x++) {
                 notifyVal[i][x] = settings.getFloat("notifyValues" + i + ":" + x, 0f);
             }
@@ -519,6 +482,7 @@ public class MainActivity extends AppCompatActivity {
 
                             setStatus(FabMode.CONNECTED);
                             float[] temp1 = packet.getTemp();
+                            TemperatureChecker.checkTemps(temp1, getApplicationContext());
                             for (int i = 0; i < temp1.length; i++) {
                                 statusFragment.setTemp(i, temp1[i]);
                             }

@@ -4,16 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fragments.StatusFragment"
+    tools:context=".UI.fragments.StatusFragment"
     android:orientation="vertical"
     android:id="@+id/statusView">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_marginBottom="10dp">
 
         <LinearLayout
+            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -52,6 +53,7 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
+        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -90,33 +92,7 @@
                     app:arc_progress="0"
                     app:arc_bottom_text="TEST"/>
 
-                <com.github.lzyzsd.circleprogress.ArcProgress
-                    android:id="@+id/temp1FromNotify"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginEnd="@dimen/notify_temp_spacing"
-                    app:arc_stroke_width="2dp"
-                    app:arc_angle="270"
-                    app:arc_max="100"
-                    app:arc_text_size="@dimen/notify_temp_text_size"
-                    app:arc_progress="0"
-                    app:arc_unfinished_color="@android:color/transparent"
-                    app:arc_finished_color="@color/temperatureBarColor"
-                    android:layout_toStartOf="@+id/temp1"/>
 
-                <com.github.lzyzsd.circleprogress.ArcProgress
-                    android:id="@+id/temp1ToNotify"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:arc_stroke_width="2dp"
-                    app:arc_angle="270"
-                    app:arc_max="100"
-                    app:arc_text_size="@dimen/notify_temp_text_size"
-                    app:arc_progress="0"
-                    app:arc_unfinished_color="@android:color/transparent"
-                    app:arc_finished_color="@color/temperatureBarColor"
-                    android:layout_marginStart="@dimen/notify_temp_spacing"
-                    android:layout_toEndOf="@+id/temp1"/>
 
 
                 <com.github.lzyzsd.circleprogress.ArcProgress
@@ -135,33 +111,6 @@
                     app:arc_suffix_text="°C"
                     android:layout_toEndOf="@+id/temp1"/>
 
-                <com.github.lzyzsd.circleprogress.ArcProgress
-                    android:id="@+id/temp2ToNotify"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:arc_stroke_width="2dp"
-                    app:arc_angle="270"
-                    app:arc_max="100"
-                    app:arc_text_size="@dimen/notify_temp_text_size"
-                    app:arc_progress="0"
-                    app:arc_unfinished_color="@android:color/transparent"
-                    app:arc_finished_color="@color/temperatureBarColor"
-                    android:layout_marginStart="@dimen/notify_temp_spacing"
-                    android:layout_toEndOf="@+id/temp2"/>
-
-                <com.github.lzyzsd.circleprogress.ArcProgress
-                    android:id="@+id/temp2FromNotify"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginEnd="@dimen/notify_temp_spacing"
-                    app:arc_stroke_width="2dp"
-                    app:arc_angle="270"
-                    app:arc_max="100"
-                    app:arc_text_size="@dimen/notify_temp_text_size"
-                    app:arc_progress="0"
-                    app:arc_unfinished_color="@android:color/transparent"
-                    app:arc_finished_color="@color/temperatureBarColor"
-                    android:layout_toStartOf="@+id/temp2"/>
 
                 <com.github.lzyzsd.circleprogress.ArcProgress
                     android:id="@+id/temp3"
@@ -179,34 +128,6 @@
                     app:arc_max="120"
                     android:layout_toEndOf="@+id/temp2"/>
 
-                <com.github.lzyzsd.circleprogress.ArcProgress
-                    android:id="@+id/temp3FromNotify"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginEnd="@dimen/notify_temp_spacing"
-                    app:arc_stroke_width="2dp"
-                    app:arc_angle="270"
-                    app:arc_max="100"
-                    app:arc_text_size="@dimen/notify_temp_text_size"
-                    app:arc_progress="0"
-                    app:arc_unfinished_color="@android:color/transparent"
-                    app:arc_finished_color="@color/temperatureBarColor"
-                    android:layout_toStartOf="@+id/temp3"/>
-
-                <com.github.lzyzsd.circleprogress.ArcProgress
-                    android:id="@+id/temp3ToNotify"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginEnd="@dimen/notify_temp_spacing"
-                    app:arc_stroke_width="2dp"
-                    app:arc_angle="270"
-                    app:arc_max="100"
-                    app:arc_text_size="@dimen/notify_temp_text_size"
-                    app:arc_progress="0"
-                    app:arc_unfinished_color="@android:color/transparent"
-                    app:arc_finished_color="@color/temperatureBarColor"
-                    android:layout_marginStart="-25dp"
-                    android:layout_toEndOf="@+id/temp3"/>
             </RelativeLayout>
 
         </RelativeLayout>
@@ -216,7 +137,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_marginBottom="10dp">
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -276,8 +197,7 @@
     </android.support.v7.widget.CardView>
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_marginStart="5dp"

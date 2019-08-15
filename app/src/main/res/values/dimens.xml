@@ -10,6 +10,5 @@
     <dimen name="horizontal_temp_spacing">20dp</dimen>
     <dimen name="notify_temp_spacing">-25dp</dimen>
     <dimen name="temp_text_size">27sp</dimen>
-    <dimen name="notify_temp_text_size">10sp</dimen>
     <dimen name="temp_suffix_text_padding">-4dp</dimen>
 </resources>

@@ -1,4 +1,4 @@
-package cz.fjerabek.temperatureController.ui.fragments;
+package cz.fjerabek.temperatureController.UI.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;

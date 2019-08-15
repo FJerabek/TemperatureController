@@ -6,6 +6,9 @@ import android.os.Vibrator;
 import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 
 public class VibrationNotification extends TemperatureNotifiable {
+
+    public static String NAME = "Vibrační notifikace";
+
     private Vibrator mVibrator;
     private long[] pattern;
 
@@ -27,5 +30,10 @@ public class VibrationNotification extends TemperatureNotifiable {
         if(mVibrator != null) {
             mVibrator.cancel();
         }
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 }

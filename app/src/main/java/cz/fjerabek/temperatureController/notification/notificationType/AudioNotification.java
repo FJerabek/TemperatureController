@@ -7,6 +7,7 @@ import cz.fjerabek.temperatureController.notification.NotificationManager;
 import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 
 public class AudioNotification extends TemperatureNotifiable {
+    public static String NAME = "Zvukové varování";
 
     @Override
     public void outOfRange(Context context, TemperatureRestriction restriction) {
@@ -22,5 +23,10 @@ public class AudioNotification extends TemperatureNotifiable {
     @Override
     public void dismiss(Context context, TemperatureRestriction restriction) {
         NotificationManager.stop(context);
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 }

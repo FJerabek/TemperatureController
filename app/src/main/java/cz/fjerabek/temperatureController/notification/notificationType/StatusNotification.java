@@ -12,12 +12,13 @@ import cz.fjerabek.temperatureController.R;
 import cz.fjerabek.temperatureController.restriction.TemperatureRestriction;
 
 public class StatusNotification extends TemperatureNotifiable {
+    public static String NAME = "Teplotní varování";
+
     @Override
     public void outOfRange(Context context, TemperatureRestriction restriction) {
-        startNotification("Teplotní varování",
+        startNotification(NAME,
                 "Teplota: " + restriction.getTemperature().getName() +  " Hodnota: " + restriction.getTemperature().getValue(),
                 context,
-                restriction.getTemperature().getId(),
                 restriction.getId());
     }
 
@@ -26,7 +27,7 @@ public class StatusNotification extends TemperatureNotifiable {
      * @param title title of the notification
      * @param description description of the notification
      */
-    private void startNotification(String title, String description, Context context, int tempId, int restrictionId){
+    private void startNotification(String title, String description, Context context, int restrictionId){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context,"cz.fjerabek.temperatureController");
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(description);
@@ -36,10 +37,7 @@ public class StatusNotification extends TemperatureNotifiable {
         mBuilder.setAutoCancel(false);
         mBuilder.setOngoing(false);
 
-        System.out.println("creating intent tempID: " + tempId + " restrictionID: " + restrictionId);
-
         Intent i = new Intent(context, MainActivity.class);
-        i.putExtra("temperatureID", tempId);
         i.putExtra("restrictionID", restrictionId);
 
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -63,5 +61,10 @@ public class StatusNotification extends TemperatureNotifiable {
         if (mNotificationManager != null) {
             mNotificationManager.cancel(getId());
         }
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 }
